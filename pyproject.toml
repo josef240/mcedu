@@ -1,0 +1,19 @@
+[project]
+name = "mcedu"
+version = "0.0.1"
+description = "Provides methods to query Minecraft Education's discovery API and to generate tokens."
+authors = [
+    { name = "josef240"},
+]
+readme = "README.md"
+license={file = "LICENSE"}
+requires-python = ">=3.8"
+dependencies = [
+    "requests-oauthlib>=2.0.0",
+    "requests",
+    "jwt"
+]
+
+[build-system] 
+requires = ["setuptools>=61.0","build"] 
+build-backend = "setuptools.build_meta"
