@@ -3,10 +3,25 @@ Provides methods to query Minecraft Education's discovery/joincode API and to ge
 
 ## Installation
 
+### From PyPI
+
+```shell
+pip install mcedu
+```
+
 ### From Github
 
 ```shell
 pip install git+https://github.com/josef240/mcedu.git
+```
+
+### Build Locally
+
+```shell
+git clone https://github.com/josef240/mcedu.git
+cd mcedu
+python -m pip install setuptools, build
+python -m build
 ```
 
 ## Usage Example
