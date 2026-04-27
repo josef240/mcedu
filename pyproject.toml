@@ -1,6 +1,6 @@
 [project]
 name = "mcedu"
-version = "0.0.1"
+version = "0.0.3"
 description = "Provides methods to query Minecraft Education's discovery API and to generate tokens."
 authors = [
     { name = "josef240"},
@@ -16,8 +16,7 @@ keywords = ["minecraft", "mcedu", "joincode", "discovery", "minecraft education"
 requires-python = ">=3.11"
 dependencies = [
     "requests-oauthlib>=2.0.0",
-    "requests",
-    "jwt"
+    "requests"
 ]
 
 [build-system] 

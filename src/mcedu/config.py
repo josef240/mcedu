@@ -7,25 +7,22 @@ import logging
 import json
 import os
 
-if TYPE_CHECKING:
-    from .auth import AuthFlow
+if TYPE_CHECKING: from .auth import AuthFlow
 
-VerifyHTTPS=False
+VerifyHTTPS=True
 "I use mitmproxy to look at my HTTPS requests, and cannot do it if the requests are verified."
-ProtocolVersion=818
+ProtocolVersion=898
 "Bedrock Protocol Number"
-BuildNumber=12193001
+BuildNumber=12113200
 "Internal Build Number"
-DisplayVersion="1.21.93"
+DisplayVersion="1.21.132"
 "The version players see ingame"
 
-logging.basicConfig(level=logging.INFO)
-GlobalLogger = logging.getLogger("mcedu")
+logger = logging.getLogger("mcedu.config")
 
 class Config:
     """A singleton-like class to hold all configuration settings."""
     def __init__(self,loadFile=True,configFile="settings.json"):
-        global GlobalLogger
         self.configFile=configFile
         self.vector = uuid()
         self.playfabid:str=""
@@ -35,9 +32,8 @@ class Config:
         if loadFile: 
             try:
                 self.loadSettings()
-                return
             except Exception as e:
-                GlobalLogger.error(f"[Config] Error loading files: {e}")
+                logger.error(f"Error loading files: {e}")
 
     def __str__(self):
         global ProtocolVersion, BuildNumber
@@ -68,9 +64,9 @@ class Config:
         try:
             with open(self.configFile, 'w') as f:
                 json.dump(self.toJSON(), f,indent=4)
-            GlobalLogger.info(f"[Config] Saved to {self.configFile}")
+            logger.info(f"Saved to {self.configFile}")
         except Exception as e:
-            GlobalLogger.error(f"[Config] Error saving config to JSON: {e}")
+            logger.error(f"Error saving config to JSON: {e}")
 
     def loadSettings(self) -> bool:
         """
@@ -78,7 +74,7 @@ class Config:
         Returns True if successful, False otherwise.
         """
         if not os.path.exists(self.configFile):
-            GlobalLogger.warning(f"[Config] {self.configFile} not found. Will proceed with fresh initialization.")
+            logger.warning(f"{self.configFile} not found. Will proceed with fresh initialization.")
             return False
 
         try:
@@ -92,18 +88,19 @@ class Config:
             if "playfabid" in datakeys:self.playfabid = data["playfabid"]
 
             self.imported=True
-            GlobalLogger.info(f"[Config] Configuration successfully loaded from {self.configFile}.")
+            logger.info(f"Configuration successfully loaded from {self.configFile}.")
             return True
 
         except (json.JSONDecodeError, IOError) as e:
-            GlobalLogger.error(f"[Config] Error loading config from JSON: {e}. Proceeding with fresh initialization.")
+            logger.error(f"Error loading config from JSON: {e}. Proceeding with fresh initialization.")
             return False
 
-# Initialize the global configuration object
-CONFIG = Config(loadFile=False)
+CONFIG = None
 
 def get_config():
     """Provides access to the the global config object."""
+    global CONFIG
+    if not CONFIG: CONFIG = Config(loadFile=False)
     return CONFIG
 
 def BuildNumFromTrueVersion(version:str) ->Optional[int]:
@@ -122,3 +119,14 @@ def setVersionData(protoVersion=ProtocolVersion,buildNum=BuildNumber, strVersion
     ProtocolVersion=protoVersion
     BuildNumber=buildNum
     DisplayVersion=strVersion
+
+__all__ = [
+    "VerifyHTTPS",
+    "ProtocolVersion",
+    "BuildNumber",
+    "DisplayVersion",
+    "Config",
+    "get_config",
+    "setVersionData",
+    "BuildNumFromTrueVersion"
+]

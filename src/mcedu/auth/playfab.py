@@ -1,23 +1,16 @@
 "Methods for accessing Minecraft Education's Playfab API"
-from ..config import GlobalLogger, VerifyHTTPS, get_config
+from ..config import VerifyHTTPS, get_config
+from ..utils import generatePlayfabID
 from typing import Dict, Optional, Any, TypeAlias
+import logging
 import requests
-import binascii
 import os
 
 # I did not write this Playfab code, only picked it up and modified it from https://github.com/DJStompZone/PyNetherNet. I 
 # understand how it works however, and this is not a significant portion of his code, so I didn't include his license file.
 
 PlayfabRequestPayload: TypeAlias = dict[str, None | bool | dict[str, bool] | str]
-
-def gen_custom_id():
-    """
-    Generates a custom ID for the player.
-
-    Returns:
-        str: A custom ID string prefixed with 'MCPF' and followed by a hex-encoded random value.
-    """
-    return "MCPF" + binascii.hexlify(os.urandom(16)).decode("UTF-8").upper()
+logger=logging.getLogger("mcedu.auth.playfab")
 
 class PlayFabClient:
     """
@@ -61,9 +54,9 @@ class PlayFabClient:
             rsp.raise_for_status()
             return rsp.json()['data']
         except requests.RequestException as e:
-            GlobalLogger.error(f"[Playfab] Request failed: {e}")
-            GlobalLogger.info(f"[Playfab] Failed request payload: {e.request.body}")
-            GlobalLogger.info(f"[Playfab] Failed response content: {e.response.content}")
+            logger.error(f"Request failed: {e}")
+            logger.debug(f"Failed request payload: {e.request.body}")
+            logger.debug(f"Failed response content: {e.response.content}")
             return {}
 
     def login_with_custom_id(self, custom_id="") -> Optional[Dict[str, Any]]:
@@ -76,7 +69,7 @@ class PlayFabClient:
         create_new_account = False
 
         if custom_id == "":
-            custom_id = gen_custom_id()
+            custom_id = generatePlayfabID()
             get_config().playfabid=custom_id
             create_new_account = True
 

@@ -4,7 +4,7 @@ from enum import Enum
 import datetime
 import logging
 
-logger=logging.getLogger("mcedu")
+logger=logging.getLogger("mcedu.auth.token")
 
 class TokenType(Enum):
     MCTOKEN=0
@@ -53,7 +53,7 @@ class Token:
                 if jsonData["type"] == "MSACCESS": self.type = TokenType.MSACCESS
                 if jsonData["type"] == "EDUTOKEN": self.type = TokenType.EDUTOKEN
 
-                if self.type == TokenType.IMPORTED: print("This token type is nonexistent. Somehow.")
+                if self.type == TokenType.IMPORTED: logger.error(f"This token type is somehow nonexistent. TokenType: {jsonData['type']}")
 
     def fetchToken(self) -> str:
         if self.isExpired:
@@ -70,7 +70,7 @@ class Token:
                 refresh_token=self.refreshToken
             ))
         else:
-            logger.warning("WARNING!!! Only MSTOKENS can be refreshed!")
+            logger.warning("Only MSTOKENS can be refreshed!")
 
     def export(self) -> dict:
         exportData={
@@ -87,7 +87,7 @@ class Token:
         return (self.expireDate < datetime.datetime.now(datetime.timezone.utc)) if (self.expireDate is not None) else False
 
 class TokenProtocol(Protocol):
-    "Token Protocol. I'll implement it in the next update!"
+    "Token Protocol. I'll implement at some point in the future."
     def __init__(self,type,jsonData): ...
     def fetchToken(self): ...
     def refresh(self): ...

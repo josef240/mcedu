@@ -12,29 +12,34 @@ from .auth import (
 from .config import (
     Config,
     get_config,
-    GlobalLogger,
     setVersionData,
     BuildNumFromTrueVersion
 )
 from .discovery import (
     TokenCode,
     parseJoinCode,
+    encodeJoinCode,
     WorldParams,
     DiscoveryError,
     DiscoveryClient
 )
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger=logging.getLogger("mcedu")
 
 def easyStartup():
     config=get_config()
     auth=config.authflow if ((config.loadSettings()) and (config.authflow is not None)) else AuthFlow()
     auth.importTokens(True)
-    GlobalLogger.info("[Config] Imported Authentication Tokens")
+    logger.info("[Config] Imported Authentication Tokens")
     auth.requiredAuth()
     config.authflow=auth
     return auth
 
 __all__=[
     "TokenCode",
+    "encodeJoinCode",
     "parseJoinCode",
     "WorldParams",
     "DiscoveryError",
@@ -46,7 +51,6 @@ __all__=[
     "Token",
     "TokenType",
     "AuthFlow",
-    "GlobalLogger",
     "easyStartup",
     "BuildNumFromTrueVersion"
 ]

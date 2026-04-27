@@ -5,7 +5,9 @@ from .token import TokenType, Token
 class MSFTAuth():
     "Simple class to obtain Microsoft Entra credentials for MCEDU"
     def createMSAuthLink(self):
-        """Creates a Microsoft Authorization Link.
+        """
+        Creates a Microsoft Authorization Link.
+        
         Returns:
            str: Microsoft Authorization URL"""
         # Please use Device Code Authorization Flow: 10x better than this.
@@ -24,6 +26,12 @@ class MSFTAuth():
         return authorization_url
 
     def processMSAuthLink(self,clientLink:str):
+        """
+        Processes an authorization response link.
+
+        Returns:
+            Token: The obtained MSTOKEN
+        """
         token = self.oauth.fetch_token(
             token_url="https://login.microsoftonline.com/common/oauth2/token",
             authorization_response=clientLink,

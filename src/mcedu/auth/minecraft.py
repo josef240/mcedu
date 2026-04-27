@@ -2,7 +2,7 @@
 from ..config import get_config, DisplayVersion, VerifyHTTPS
 from .token import TokenType, Token
 from .playfab import PlayFabClient
-from ..utils import uuid
+from ..utils import generateDeviceID, uuid
 import requests
 import random
 import string

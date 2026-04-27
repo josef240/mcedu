@@ -152,7 +152,12 @@ activemq-data/
 .envrc
 .venv
 settings.json
+signals.json
 test.py
+tools/
+tests/
+protocol/
+framer.py
 .idx/
 env/
 venv/
